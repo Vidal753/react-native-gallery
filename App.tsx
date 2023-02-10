@@ -1,18 +1,19 @@
 import React from 'react';
-import {StatusBar, View, useColorScheme} from 'react-native';
+import {StatusBar, useColorScheme} from 'react-native';
 import GalleryScreen from './screens/GalleryScreen';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <View style={{backgroundColor: '#ffff'}}>
+    <GestureHandlerRootView style={{backgroundColor: '#ffff'}}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={'#fff'}
       />
       <GalleryScreen />
-    </View>
+    </GestureHandlerRootView>
   );
 }
 

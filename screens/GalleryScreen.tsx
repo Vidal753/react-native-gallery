@@ -1,9 +1,10 @@
-import {StyleSheet, View, ScrollView, PermissionsAndroid} from 'react-native';
+import {StyleSheet, View, PermissionsAndroid, Platform} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import ImageItem from '../components/ImageItem';
 import ImageFocused from '../components/ImageFocused';
 import Header from '../components/Header';
+import {ScrollView} from 'react-native-gesture-handler';
 
 type node = {
   type: string;
@@ -32,22 +33,22 @@ const GalleryScreen = () => {
   }, []);
 
   const checkPermission = async () => {
-    const hasPermission = await PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-    );
+    const permission =
+      Number(Platform.Version) >= 33
+        ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+        : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+
+    const hasPermission = await PermissionsAndroid.check(permission);
 
     if (hasPermission) {
       return true;
     }
 
-    const status = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-      {
-        title: 'Image gallery app permissions',
-        message: 'Image gallery needs your permission to access your photos',
-        buttonPositive: 'OK',
-      },
-    );
+    const status = await PermissionsAndroid.request(permission, {
+      title: 'Image gallery app permissions',
+      message: 'Image gallery needs your permission to access your photos',
+      buttonPositive: 'OK',
+    });
 
     return status === 'granted';
   };
@@ -62,22 +63,24 @@ const GalleryScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="All Photos" />
       {nodeSelected ? (
         <ImageFocused onClose={() => setNodeSelected('')} uri={nodeSelected} />
       ) : (
-        <ScrollView style={styles.scrollStyle}>
-          <View style={styles.imageItemContainer}>
-            {nodes.map((node, index) => (
-              <ImageItem
-                key={index}
-                uri={node.image.uri}
-                size={100}
-                onPress={() => setNodeSelected(node.image.uri)}
-              />
-            ))}
-          </View>
-        </ScrollView>
+        <View>
+          <Header title="All Photos" />
+          <ScrollView style={styles.scrollStyle}>
+            <View style={styles.imageItemContainer}>
+              {nodes.map((node, index) => (
+                <ImageItem
+                  key={index}
+                  uri={node.image.uri}
+                  size={200}
+                  onPress={() => setNodeSelected(node.image.uri)}
+                />
+              ))}
+            </View>
+          </ScrollView>
+        </View>
       )}
     </View>
   );
