@@ -66,7 +66,7 @@ const GalleryScreen = () => {
       {nodeSelected ? (
         <ImageFocused onClose={() => setNodeSelected('')} uri={nodeSelected} />
       ) : (
-        <View>
+        <View style={{width: '100%', height: '100%'}}>
           <Header title="All Photos" />
           <ScrollView style={styles.scrollStyle}>
             <View style={styles.imageItemContainer}>
@@ -74,7 +74,7 @@ const GalleryScreen = () => {
                 <ImageItem
                   key={index}
                   uri={node.image.uri}
-                  size={200}
+                  size={120}
                   onPress={() => setNodeSelected(node.image.uri)}
                 />
               ))}
@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
   },
   scrollStyle: {
     width: '100%',
+    height: '100%',
   },
   imageItemContainer: {
     flex: 1,
